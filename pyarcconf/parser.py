@@ -43,3 +43,23 @@ def convert_attribute(key, value):
     elif value in ['disabled', 'no', 'false']:
         return key, False
     return key, value
+
+
+def conv_bytes_up(value, unit):
+    """Convert an amount of bytes to the highest possible unit.
+
+    Args:
+        value (str): value of bytes
+        unit (str): current unit
+    Returns:
+        str: value and unit formated
+    """
+    units = {'GB': 'TB','MB': 'GB','KB': 'MB'}
+    value = float(value)
+    while value > 1024 and unit in units.keys():
+        value = value / 1024
+        if unit == 'B':
+            unit = 'KB'
+        else:
+            unit = unit.replace(unit, units[unit])
+    return '{} {}'.format(round(value, 1), unit)
