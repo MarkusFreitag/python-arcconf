@@ -15,5 +15,6 @@ class Task():
 
     def __str__(self):
         """Build a string formatted object representation."""
-        return '{} for {}: {} ({}%)'.format(self.current_operation, self.logical_drive,
-                                            self.status, self.percentage_complete)
+        return '{}|{} for {}: {} ({}%)'.format(self.task_id, self.current_operation,
+                                               self.logical_drive, self.status,
+                                               self.percentage_complete)

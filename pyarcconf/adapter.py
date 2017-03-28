@@ -11,6 +11,8 @@ class Adapter():
         """Initialize a new Adapter object."""
         self.path = util_path
         self.id_ = id_
+        self.controller_model = None
+        self.channel_description = None
         self.raid_properties = {}
         self.version_info = {}
         self.battery = {}
@@ -120,4 +122,4 @@ class Adapter():
 
     def __str__():
         """Build a string formatted object representation."""
-        return '{} {} {}'.format(self.id_, self.controller_model, self.channel_description)
+        return '{}|{} {}'.format(self.id_, self.controller_model, self.channel_description)
