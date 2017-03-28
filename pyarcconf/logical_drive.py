@@ -54,3 +54,20 @@ class LogicalDrive():
         """Build a string formatted object representation."""
         return '{}|{} {} {} {}'.format(self.id_, self.logical_drive_name, self.raid_level,
                                        self.status_of_logical_drive, self.size)
+
+
+class LogicalDriveSegment():
+    """Object which represents a logical drive segment."""
+
+    def __init__(self, channel, port, state, serial, proto, type_):
+        """Initialize a new PhysicalDrive object."""
+        self.channel = channel
+        self.port = port
+        self.state = state
+        self.serial = serial
+        self.proto = proto
+        self.type_ = type_
+
+    def __str__(self):
+        """Build a string formatted object representation."""
+        return '{},{} {} {}'.format(self.channel, self.port, self.state, self.serial)
