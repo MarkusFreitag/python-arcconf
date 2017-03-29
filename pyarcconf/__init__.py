@@ -62,7 +62,7 @@ class Arcconf():
         result = _execute('LIST')
         result = parser.cut_lines(result, 6, 2)
         for line in result.split('\n'):
-            adapters.append(line.split(':')[0].strip()split()[1])
+            adapters.append(line.split(':')[0].strip().split()[1])
         return adapters
 
     def get_adapters(self):
