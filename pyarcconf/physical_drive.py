@@ -31,9 +31,9 @@ class PhysicalDrive():
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = proc.communicate()
         if isinstance(out, bytes):
-            out = out.decode().lstrip().rstrip()
+            out = out.decode().strip()
         if isinstance(err, bytes):
-            err = err.decode().lstrip().rstrip()
+            err = err.decode().strip()
         if proc.returncode:
             ex = RuntimeError(err)
             ex.exitcode = proc.returncode
