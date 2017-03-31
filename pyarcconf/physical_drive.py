@@ -43,3 +43,39 @@ class PhysicalDrive():
     def __str__(self):
         """Build a string formatted object representation."""
         return '{}|{} {}'.format(self.id_, self.model, self.serial_number)
+
+    def set_state(self, state):
+        """Set the state for the physical drive.
+
+        Args:
+            state (str): new state
+        Returns:
+            bool: command result
+        """
+        result = self._execute('SETSTATE', [state])
+        if bool(result.endswith('Command successfully.')):
+            result = _execute('GETCONFIG', ['PD', self.id_])
+            result = parser.cut_lines(result, 4, 4)
+            for line in result.split('\n'):
+                if line.strip().startswith('State'):
+                    self.state = line.split(':')[1].strip().lower()
+            return True
+        return False
+
+    def set_cache(self, mode):
+        """Set the cache for the physical drive.
+
+        Args:
+            mode (str): new mode
+        Returns:
+            bool: command result
+        """
+        result = self._execute('SETCACHE', [mode])
+        if bool(result.endswith('Command successfully.')):
+            result = _execute('GETCONFIG', ['PD', self.id_])
+            result = parser.cut_lines(result, 4, 4)
+            for line in result.split('\n'):
+                if line.strip().startswith('Write Cache'):
+                    self.write_cache = line.split(':')[1].strip().lower()
+            return True
+        return False
