@@ -36,7 +36,7 @@ def convert_attribute(key, value):
     if len(value.split()) == 2:
         size, unit = value.split()
         if size.isdigit() and unit in ['B', 'KB', 'MB', 'GB']:
-            return key, conv_bytes_up(size, unit)
+            return key, bytes_fmt(float(size))
     value = value.strip().lower()
     if value in ['enabled', 'yes', 'true']:
         return key, True
@@ -45,21 +45,16 @@ def convert_attribute(key, value):
     return key, value
 
 
-def conv_bytes_up(value, unit):
-    """Convert an amount of bytes to the highest possible unit.
+def bytes_fmt(value):
+    """Format a byte value human readable.
 
     Args:
-        value (str): value of bytes
-        unit (str): current unit
+        value (float): value of bytes
     Returns:
-        str: value and unit formated
+        str: formated value with unit
     """
-    units = {'GB': 'TB','MB': 'GB','KB': 'MB'}
-    value = float(value)
-    while value > 1024 and unit in units.keys():
-        value = value / 1024
-        if unit == 'B':
-            unit = 'KB'
-        else:
-            unit = unit.replace(unit, units[unit])
-    return '{} {}'.format(round(value, 1), unit)
+    for unit in ['', 'K', 'M', 'G']:
+        if abs(value) < 1024.0:
+            return '{:3.2}f{}B'.format(value, unit)
+        value /= 1024.0
+    return '{:3.2}fTB'.format(value, 'G')
