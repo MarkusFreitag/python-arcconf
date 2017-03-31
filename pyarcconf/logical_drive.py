@@ -55,6 +55,61 @@ class LogicalDrive():
         return '{}|{} {} {} {}'.format(self.id_, self.logical_drive_name, self.raid_level,
                                        self.status_of_logical_drive, self.size)
 
+    def set_name(self, name):
+        """Set the name for the logical drive.
+
+        Args:
+            name (str): new name
+        Returns:
+            bool: command result
+        """
+        result = self._execute('SETNAME', [name])
+        if bool(result.endswith('Command successfully.')):
+            result = _execute('GETCONFIG', ['LD', self.id_])
+            result = parser.cut_lines(result, 4, 4)
+            for line in result.split('\n'):
+                if line.strip().startswith('Logical Device Name'):
+                    self.logical_device_name = line.split(':')[1].strip().lower()
+            return True
+        return False
+
+    def set_state(self, state):
+        """Set the state for the logical drive.
+
+        Args:
+            state (str): new state
+        Returns:
+            bool: command result
+        """
+        result = self._execute('SETSTATE', [state])
+        if bool(result.endswith('Command successfully.')):
+            result = _execute('GETCONFIG', ['LD', self.id_])
+            result = parser.cut_lines(result, 4, 4)
+            for line in result.split('\n'):
+                if line.strip().startswith('Status'):
+                    self.status_of_logical_device = line.split(':')[1].strip().lower()
+            return True
+        return False
+
+    def set_cache(self, mode):
+        """Set the cache for the logical drive.
+
+        Args:
+            mode (str): new mode
+        Returns:
+            bool: command result
+        """
+        result = self._execute('SETCACHE', [mode])
+        if bool(result.endswith('Command successfully.')):
+            result = _execute('GETCONFIG', ['LD', self.id_])
+            result = parser.cut_lines(result, 4, 4)
+            for line in result.split('\n'):
+                if line.split(':')[0].strip() in ['Read-cache', 'Write-cache']:
+                    key, value = convert_attribute(*line.split(':'))
+                    self.__setattr__(key, value)
+            return True
+        return False
+
 
 class LogicalDriveSegment():
     """Object which represents a logical drive segment."""
