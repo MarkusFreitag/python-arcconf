@@ -40,7 +40,7 @@ class Arcconf():
             dict: controller with there version numbers for bios, firmware, etc.
         """
         versions = {}
-        result = _execute('GETVERSION')
+        result = self._execute('GETVERSION')
         result = parser.cut_lines(result, 2, 3)
         for part in result.split('\n\n'):
             lines = part.split('\n')
@@ -59,7 +59,7 @@ class Arcconf():
             list: list of adapter ids
         """
         adapters = []
-        result = _execute('LIST')
+        result = self._execute('LIST')
         result = parser.cut_lines(result, 6, 2)
         for line in result.split('\n'):
             adapters.append(line.split(':')[0].strip().split()[1])

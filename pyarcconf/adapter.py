@@ -49,7 +49,7 @@ class Adapter():
 
     def fetch_data(self):
         """Parse the info about the adapter itself."""
-        result = _execute('GETCONFIG', ['AD'])
+        result = self._execute('GETCONFIG', ['AD'])
         result = parser.cut_lines(result, 4, 3)
         info = result.split(56*'-')[0]
         raid_props = result.split(56*'-')[2]
@@ -74,7 +74,7 @@ class Adapter():
 
     def fetch_log_drives(self):
         """Parse the info about logical drives."""
-        result = _execute('GETCONFIG', ['LD'])
+        result = self._execute('GETCONFIG', ['LD'])
         result = parser.cut_lines(info_str, 4, 4)
         for part in result.split('\n\n'):
             log_drive = LogicalDrive(self.path, self.id_)
@@ -97,7 +97,7 @@ class Adapter():
 
     def fetch_phy_drives(self):
         """Parse the info about physical drives."""
-        result = _execute('GETCONFIG', ['PD'])
+        result = self._execute('GETCONFIG', ['PD'])
         result = parser.cut_lines(info_str, 4, 5)
         for part in result.split('\n\n'):
             phy_drive = PhysicalDrive(self.path, self.id_)
@@ -111,7 +111,7 @@ class Adapter():
 
     def fetch_tasks(self):
         """Parse the tasks."""
-        result = _execute('GETSTATUS')
+        result = self._execute('GETSTATUS')
         result = parser.cut_lines(info_str, 1, 3)
         for part in result.split('\n\n'):
             task = Task()
