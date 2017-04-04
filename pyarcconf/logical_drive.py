@@ -1,5 +1,7 @@
 """Pyarcconf submodule, which provides a logical drive representing class."""
 
+import subprocess
+from pyarcconf import parser
 
 class LogicalDrive():
     """Object which represents a logical drive."""
@@ -33,21 +35,15 @@ class LogicalDrive():
         Raises:
             RuntimeError: if command fails
         """
-        if cmd 'GETCONFIG':
+        if cmd == 'GETCONFIG':
             base_cmd = [self.path, cmd, self.adapter_id]
         else:
             base_cmd = [self.path, cmd, self.adapter_id, 'LOGICALDRIVE', self.id_]
-        proc = subprocess.Popen(base_cmd + args, shell=True,
+        proc = subprocess.Popen(base_cmd + args,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = proc.communicate()
+        out, _ = proc.communicate()
         if isinstance(out, bytes):
             out = out.decode().strip()
-        if isinstance(err, bytes):
-            err = err.decode().strip()
-        if proc.returncode:
-            ex = RuntimeError(err)
-            ex.exitcode = proc.returncode
-            raise ex
         return out
 
     def __str__(self):
@@ -64,7 +60,7 @@ class LogicalDrive():
             bool: command result
         """
         result = self._execute('SETNAME', [name])
-        if bool(result.endswith('Command successfully.')):
+        if bool(result.endswith('Command completed successfully.')):
             result = _execute('GETCONFIG', ['LD', self.id_])
             result = parser.cut_lines(result, 4, 4)
             for line in result.split('\n'):
@@ -82,7 +78,7 @@ class LogicalDrive():
             bool: command result
         """
         result = self._execute('SETSTATE', [state])
-        if bool(result.endswith('Command successfully.')):
+        if bool(result.endswith('Command completed successfully.')):
             result = _execute('GETCONFIG', ['LD', self.id_])
             result = parser.cut_lines(result, 4, 4)
             for line in result.split('\n'):
@@ -100,7 +96,7 @@ class LogicalDrive():
             bool: command result
         """
         result = self._execute('SETCACHE', [mode])
-        if bool(result.endswith('Command successfully.')):
+        if bool(result.endswith('Command completed successfully.')):
             result = _execute('GETCONFIG', ['LD', self.id_])
             result = parser.cut_lines(result, 4, 4)
             for line in result.split('\n'):
