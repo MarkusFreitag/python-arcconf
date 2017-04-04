@@ -1,6 +1,7 @@
 """Python3 library for the arcconf tool."""
 import subprocess
-import pyarcconf.parser
+from pyarcconf import parser
+from pyarcconf.adapter import Adapter
 
 
 class Arcconf():
@@ -20,17 +21,11 @@ class Arcconf():
         Raises:
             RuntimeError: if command fails
         """
-        proc = subprocess.Popen([self.path, cmd] + args, shell=True,
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = proc.communicate()
+        proc = subprocess.Popen([self.path, cmd] + args,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, _ = proc.communicate()
         if isinstance(out, bytes):
-            out = out.decode().lstrip().rstrip()
-        if isinstance(err, bytes):
-            err = err.decode().lstrip().rstrip()
-        if proc.returncode:
-            ex = RuntimeError(err)
-            ex.exitcode = proc.returncode
-            raise ex
+            out = out.decode().strip()
         return out
 
     def get_version(self):
@@ -47,8 +42,8 @@ class Arcconf():
             id_ = lines[0].split('#')[1]
             versions[id_] = {}
             for line in lines[2:]:
-                key = line.split(':').strip()
-                value = line.split(':').strip()
+                key = line.split(':')[0].strip()
+                value = line.split(':')[1].strip()
                 versions[id_][key] = value
         return versions
 
@@ -60,7 +55,7 @@ class Arcconf():
         """
         adapters = []
         result = self._execute('LIST')
-        result = parser.cut_lines(result, 6, 2)
+        result = parser.cut_lines(result, 7, 2)
         for line in result.split('\n'):
             adapters.append(line.split(':')[0].strip().split()[1])
         return adapters
